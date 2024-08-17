@@ -44,7 +44,7 @@ void main() {
   TEST.group('path tests', () {
     var isWindows = Platform.operatingSystem == 'win32';
     print(Directory.current.path);
-    var f = join([Directory.current.path, 'test_path.dart']);
+    var f = join!([Directory.current.path, 'test_path.dart']);
 
     TEST.test('basename', () {
       TEST.expect(basename(f), TEST.equals('test_path.dart'));
@@ -539,7 +539,7 @@ void main() {
 
       /// Run the join tests.
       joinTests.forEach((t) {
-        var actual = join(t[0]);
+        var actual = join!(t[0]);
         var expected =
             // TODO: check the addition of .toString()
             isWindows ? t[1][0].replaceAll(RegExp(r'\/'), '\\') : t[1][0];
@@ -563,21 +563,21 @@ void main() {
     TEST.test('normalize', () {
       //// path normalize tests
       if (isWindows) {
-        TEST.expect(normalize('./fixtures///b/../b/c.js'),
+        TEST.expect(normalize!('./fixtures///b/../b/c.js'),
             TEST.equals('fixtures\\b\\c.js'));
-        TEST.expect(normalize('/foo/../../../bar'), TEST.equals('\\bar'));
-        TEST.expect(normalize('a//b//../b'), TEST.equals('a\\b'));
-        TEST.expect(normalize('a//b//./c'), TEST.equals('a\\b\\c'));
-        TEST.expect(normalize('a//b//.'), TEST.equals('a\\b'));
-        TEST.expect(normalize('//server/share/dir/file.ext'),
+        TEST.expect(normalize!('/foo/../../../bar'), TEST.equals('\\bar'));
+        TEST.expect(normalize!('a//b//../b'), TEST.equals('a\\b'));
+        TEST.expect(normalize!('a//b//./c'), TEST.equals('a\\b\\c'));
+        TEST.expect(normalize!('a//b//.'), TEST.equals('a\\b'));
+        TEST.expect(normalize!('//server/share/dir/file.ext'),
             TEST.equals('\\\\server\\share\\dir\\file.ext'));
       } else {
-        TEST.expect(normalize('./fixtures///b/../b/c.js'),
+        TEST.expect(normalize!('./fixtures///b/../b/c.js'),
             TEST.equals('fixtures/b/c.js'));
-        TEST.expect(normalize('/foo/../../../bar'), TEST.equals('/bar'));
-        TEST.expect(normalize('a//b//../b'), TEST.equals('a/b'));
-        TEST.expect(normalize('a//b//./c'), TEST.equals('a/b/c'));
-        TEST.expect(normalize('a//b//.'), TEST.equals('a/b'));
+        TEST.expect(normalize!('/foo/../../../bar'), TEST.equals('/bar'));
+        TEST.expect(normalize!('a//b//../b'), TEST.equals('a/b'));
+        TEST.expect(normalize!('a//b//./c'), TEST.equals('a/b/c'));
+        TEST.expect(normalize!('a//b//.'), TEST.equals('a/b'));
       }
     });
 
@@ -664,7 +664,7 @@ void main() {
       var failures = [];
       // var rtCounter = 0;
       resolveTests.forEach((t) {
-        var actual = resolve(t[0]);
+        var actual = resolve!(t[0]);
         var expected = t[1][0];
         var message = 'resolve(' +
             t[0].map(json.encode).join(',') +
@@ -683,19 +683,19 @@ void main() {
     TEST.test('isAbsolute', () {
       // isAbsolute tests
       if (isWindows) {
-        TEST.expect(isAbsolute('//server/file'), TEST.equals(true));
-        TEST.expect(isAbsolute('\\\\server\\file'), TEST.equals(true));
-        TEST.expect(isAbsolute('C:/Users/'), TEST.equals(true));
-        TEST.expect(isAbsolute('C:\\Users\\'), TEST.equals(true));
-        TEST.expect(isAbsolute('C:cwd/another'), TEST.equals(false));
-        TEST.expect(isAbsolute('C:cwd\\another'), TEST.equals(false));
-        TEST.expect(isAbsolute('directory/directory'), TEST.equals(false));
-        TEST.expect(isAbsolute('directory\\directory'), TEST.equals(false));
+        TEST.expect(isAbsolute!('//server/file'), TEST.equals(true));
+        TEST.expect(isAbsolute!('\\\\server\\file'), TEST.equals(true));
+        TEST.expect(isAbsolute!('C:/Users/'), TEST.equals(true));
+        TEST.expect(isAbsolute!('C:\\Users\\'), TEST.equals(true));
+        TEST.expect(isAbsolute!('C:cwd/another'), TEST.equals(false));
+        TEST.expect(isAbsolute!('C:cwd\\another'), TEST.equals(false));
+        TEST.expect(isAbsolute!('directory/directory'), TEST.equals(false));
+        TEST.expect(isAbsolute!('directory\\directory'), TEST.equals(false));
       } else {
-        TEST.expect(isAbsolute('/home/foo'), TEST.equals(true));
-        TEST.expect(isAbsolute('/home/foo/..'), TEST.equals(true));
-        TEST.expect(isAbsolute('bar/'), TEST.equals(false));
-        TEST.expect(isAbsolute('./baz'), TEST.equals(false));
+        TEST.expect(isAbsolute!('/home/foo'), TEST.equals(true));
+        TEST.expect(isAbsolute!('/home/foo/..'), TEST.equals(true));
+        TEST.expect(isAbsolute!('bar/'), TEST.equals(false));
+        TEST.expect(isAbsolute!('./baz'), TEST.equals(false));
       }
     });
 
@@ -731,7 +731,7 @@ void main() {
       }
       var failures = [];
       relativeTests.forEach((t) {
-        var actual = relative(t[0], t[1]);
+        var actual = relative!(t[0], t[1]);
         var expected = t[2];
         var message = 'relative(' +
             slice(t, 0, 2).map(json.encode).join(',') +

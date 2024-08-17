@@ -54,7 +54,7 @@ int unshift(List list, item) {
   return list.length;
 }
 
-List slice(List list, int begin, [int end]) => list
+List slice(List list, int begin, [int? end]) => list
     .getRange(
         begin, end == null ? list.length : end < 0 ? list.length + end : end)
     .toList();
@@ -129,7 +129,7 @@ String replace(String str, pattern) => str.replaceAll(str, pattern);
 
 int search(String str, RegExp pattern) => str.indexOf(pattern);
 
-String substr(String str, int start, [int length]) {
+String substr(String str, int start, [int? length]) {
   if (start < 0) {
     start = str.length + start;
   }
@@ -157,7 +157,7 @@ String escapeHtml(String html) => html
 
 /// RegEx
 
-List<String> exec(RegExp regex, String str) {
+List<String?>? exec(RegExp regex, String str) {
   var m = regex.firstMatch(str);
   if (m == null) {
     return null;

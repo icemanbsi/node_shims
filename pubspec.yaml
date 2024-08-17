@@ -5,7 +5,7 @@ description: Common node and js utils to help in porting of node.js and javascri
 homepage: https://github.com/dartist/node_shims/
 
 environment:
-  sdk: '>=2.3.0 <=3.0.0'
+  sdk: '>=3.0.0 <4.0.0'
 
 dev_dependencies:
   test: 

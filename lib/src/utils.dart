@@ -17,9 +17,12 @@ String trimEnd(String str, String end) {
 }
 
 List<Group> group(Iterable seq,
-    {Function(dynamic x) by,
-    Comparator matchWith,
-    Function(dynamic x) valuesAs}) {
+    {
+      required Function(dynamic x) by,
+      Comparator? matchWith,
+      Function(dynamic x)? valuesAs
+    }
+) {
   // var ret = [];
   var map = <dynamic, Group>{};
   seq.forEach((x) {
@@ -36,7 +39,7 @@ List<Group> group(Iterable seq,
       x = valuesAs(x);
     }
 
-    map[key].add(x);
+    map[key]?.add(x);
   });
   return map.values.toList();
 }
@@ -56,10 +59,10 @@ class Group extends IterableBase {
 dynamic wrap(value, Function(dynamic x) fn) => fn(value);
 
 dynamic order(List seq,
-        {Comparator by,
-        List<Comparator> byAll,
-        Function(dynamic x) on,
-        List<Function> onAll}) =>
+        {Comparator? by,
+        List<Comparator>? byAll,
+        Function(dynamic x)? on,
+        List<Function>? onAll}) =>
     by != null
         ? (seq..sort(by))
         : byAll != null

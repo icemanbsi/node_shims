@@ -66,25 +66,25 @@ typedef _string2Fn = String Function(String path1, String path2);
 typedef _stringBoolFn = bool Function(String path);
 
 class _PathExports {
-  String sep;
-  String delimiter;
-  _listStringFn resolve;
-  _listStringFn join;
-  _stringFn normalize;
-  _stringBoolFn isAbsolute;
-  _string2Fn relative;
-  _stringListFn splitPath;
+  String? sep;
+  String? delimiter;
+  _listStringFn? resolve;
+  _listStringFn? join;
+  _stringFn? normalize;
+  _stringBoolFn? isAbsolute;
+  _string2Fn? relative;
+  _stringListFn? splitPath;
 }
 
 _PathExports _exports = _factory();
-String sep = _exports.sep;
-String delimiter = _exports.delimiter;
-_listStringFn resolve = _exports.resolve;
-_listStringFn join = _exports.join;
-_stringFn normalize = _exports.normalize;
-_stringBoolFn isAbsolute = _exports.isAbsolute;
-_string2Fn relative = _exports.relative;
-_stringListFn splitPath = _exports.splitPath;
+String? sep = _exports.sep;
+String? delimiter = _exports.delimiter;
+_listStringFn? resolve = _exports.resolve;
+_listStringFn? join = _exports.join;
+_stringFn? normalize = _exports.normalize;
+_stringBoolFn? isAbsolute = _exports.isAbsolute;
+_string2Fn? relative = _exports.relative;
+_stringListFn? splitPath = _exports.splitPath;
 
 _PathExports _factory() {
   var exports = _PathExports();
@@ -107,13 +107,13 @@ _PathExports _factory() {
     exports.splitPath = (String filename) {
       // Separate device+slash from tail
       var result = exec(splitDeviceRe, filename);
-      var device = or(result[1], '') + or(result[2], '');
-      var tail = or(result[3], '');
+      var device = or(result?[1], '') + or(result?[2], '');
+      var tail = or(result?[3], '');
       // Split the tail into dir, basename and extension
       var result2 = exec(splitTailRe, tail);
-      var dir = result2[1];
-      var basename = result2[2];
-      var ext = result2[3];
+      var dir = result2![1]!;
+      var basename = result2[2]!;
+      var ext = result2[3]!;
       return [device, dir, basename, ext];
     };
 
@@ -158,15 +158,15 @@ _PathExports _factory() {
         // Skip empty and invalid entries
         if (path is! String) {
           throw TypeError(); //'Arguments to path.resolve must be strings'
-        } else if (!path) {
+        } else if (path.isNotEmpty) {
           continue;
         }
 
         var result = exec(splitDeviceRe, path);
-        var device = or(result[1], '');
+        var device = or(result![1], '');
         isUnc = device && device.substring(1, 1) != ':';
-        var isAbsolute = exports.isAbsolute(path);
-        var tail = result[3];
+        var isAbsolute = exports.isAbsolute!(path);
+        var tail = result[3] ?? '';
 
         if (device &&
             resolvedDevice != '' &&
@@ -214,10 +214,10 @@ _PathExports _factory() {
     // windows version
     exports.normalize = (String path) {
       var result = exec(splitDeviceRe, path);
-      var device = or(result[1], '');
+      var device = or(result![1], '');
       var isUnc = device != null && device.length > 1 && device[1] != ':';
-      var isAbsolute = exports.isAbsolute(path);
-      var tail = result[3];
+      var isAbsolute = exports.isAbsolute!(path);
+      var tail = result[3] ?? '';
       var trailingSlash = RegExp(r'[\\\/]$').hasMatch(tail);
 
       // If device is a drive letter, we'll normalize to lower case.
@@ -254,10 +254,10 @@ _PathExports _factory() {
     // windows version
     exports.isAbsolute = (path) {
       var result = exec(splitDeviceRe, path),
-          device = result[1] ?? '',
+          device = result?[1] ?? '',
           isUnc = device != null && device.length > 1 && device[1] != ':';
       // UNC paths are always absolute
-      return result[2] != null || isUnc;
+      return result?[2] != null || isUnc;
     };
 
     // windows version
@@ -289,7 +289,7 @@ _PathExports _factory() {
         joined = joined.replaceFirst(RegExp(r'^[\\\/]{2,}'), '\\');
       }
 
-      return exports.normalize(joined);
+      return exports.normalize!(joined);
     };
 
     // path.relative(from, to)
@@ -299,11 +299,12 @@ _PathExports _factory() {
     // The output of the function should be: '..\\..\\impl\\bbb'
     // windows version
     exports.relative = (String from, String to) {
-      List fromList, toList;
+      List<String> fromList = [];
+      List<String> toList = [];
       fromList.add(from);
       toList.add(to);
-      from = exports.resolve(fromList);
-      to = exports.resolve(toList);
+      from = exports.resolve!(fromList);
+      to = exports.resolve!(toList);
 
       // windows is not case sensitive
       var lowerFrom = from.toLowerCase();
@@ -361,10 +362,10 @@ _PathExports _factory() {
         r'^(\/?|)([\s\S]*?)((?:\.{1,2}|[^\/]+?|)(\.[^.\/]*|))(?:[\/]*)$');
 
     exports.splitPath = (String filename) {
-      var matches = exec(splitPathRe, filename);
+      var matches = exec(splitPathRe, filename) ?? [];
       //bug: https://code.google.com/p/dart/issues/detail?id=11674&thanks=11674&ts=1372835984
       if (matches.length == 5 && matches[3] == matches[4]) matches[4] = '';
-      return slice(matches, 1);
+      return slice(matches, 1).map((e) => e.toString()).toList();
     };
 
     // path.resolve([from ...], to)
@@ -401,7 +402,7 @@ _PathExports _factory() {
     // path.normalize(path)
     // posix version
     exports.normalize = (String path) {
-      var isAbsolute = exports.isAbsolute(path);
+      var isAbsolute = exports.isAbsolute!(path);
       var trailingSlash = path.endsWith('/');
 
       // Normalize the path
@@ -432,14 +433,14 @@ _PathExports _factory() {
         }
         return p != null && p != '';
       }).toList();
-      return exports.normalize(paths.join('/'));
+      return exports.normalize!(paths.join('/'));
     };
 
     // path.relative(from, to)
     // posix version
     exports.relative = (String from, String to) {
-      from = exports.resolve([from]).substring(1);
-      to = exports.resolve([to]).substring(1);
+      from = exports.resolve!([from]).substring(1);
+      to = exports.resolve!([to]).substring(1);
 
       dynamic trim(arr) {
         var start = 0;
@@ -485,7 +486,7 @@ _PathExports _factory() {
 }
 
 String dirname(String path) {
-  var result = splitPath(path);
+  var result = splitPath!(path);
   var root = result[0];
   var dir = result[1];
 
@@ -502,8 +503,8 @@ String dirname(String path) {
   return root + dir;
 }
 
-String basename(String path, [String ext]) {
-  var f = splitPath(path)[2];
+String basename(String path, [String? ext]) {
+  var f = splitPath!(path)[2];
   // TODO: make this comparison case-insensitive on windows?
   if (ext != null && f.endsWith(ext)) {
     f = f.substring(0, f.length - ext.length);
@@ -512,7 +513,7 @@ String basename(String path, [String ext]) {
 }
 
 String extname(String path) {
-  return splitPath(path)[3];
+  return splitPath!(path)[3];
 }
 
 void exists(String path, void Function(bool) callback) {

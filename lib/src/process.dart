@@ -15,7 +15,7 @@ IOSink get stderr => io.stderr;
 
 Stream get stdin => io.stdin;
 List<String> get argv => Platform.executableArguments;
-String get execPath => join([cwd(), Platform.script]);
+String get execPath => join!([cwd(), Platform.script]);
 
 void chdir(String directory) {
   Directory.current = directory;
